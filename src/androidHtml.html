@@ -185,7 +185,7 @@
 <script>
 
     Vue.component('ta', {
-        template: '<textarea class="codeTA" v-on:blur="blurSaveCode"></textarea>',
+        template: '<textarea class="codeTA" v-on:blur="blurSaveCode; blurSaveContent"></textarea>',
         methods: {
             blurSaveCode: function () {
                 $(".codeTA").hide()
@@ -197,7 +197,20 @@
                 value = html_encode(value)
                 $(".contentDiv").html($(".contentDiv").html() + "<pre>" + value + "</pre><br>")
                 $(".codeTA").val("");
-            }
+            },
+            //    失去焦点保存内容
+            blurSaveContent: function (event) {
+                if (this.title.trim().length === 0) {
+                    $(".knowledgeTitle").focus()
+                    return;
+                }
+                let content = event.currentTarget.innerHTML;
+                localStorage.setItem(this.title, content);
+
+                setTimeout(function () {
+                    imgAdapt()
+                }, 10)
+            },
         }
     })
 
@@ -381,9 +394,7 @@
     //过长的代码缩小
     $(".contentDiv .showLink").remove()
     function shrinkCode(){
-        if($(".showLink") !== null){
-            return;
-        }
+
         $(".contentDiv pre").each(function () {
             let preHeight = $(this).css("height")
             // alert(preHeight)
