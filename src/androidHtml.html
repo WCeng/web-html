@@ -185,7 +185,7 @@
 <script>
 
     Vue.component('ta', {
-        template: '<textarea class="codeTA" v-on:blur="blurSaveCode; blurSaveContent"></textarea>',
+        template: '<textarea class="codeTA" v-on:blur="blurSaveCode"></textarea>',
         methods: {
             blurSaveCode: function () {
                 $(".codeTA").hide()
@@ -198,19 +198,7 @@
                 $(".contentDiv").html($(".contentDiv").html() + "<pre>" + value + "</pre><br>")
                 $(".codeTA").val("");
             },
-            //    失去焦点保存内容
-            blurSaveContent: function (event) {
-                if (this.title.trim().length === 0) {
-                    $(".knowledgeTitle").focus()
-                    return;
-                }
-                let content = event.currentTarget.innerHTML;
-                localStorage.setItem(this.title, content);
 
-                setTimeout(function () {
-                    imgAdapt()
-                }, 10)
-            },
         }
     })
 
@@ -290,12 +278,10 @@
 
     $(".codeTA").hide()
 
-    // $(".contentDiv").on("paste", function (e) {
-    //     setTimeout(function (){
-    //
-    //         $(".contentDiv").html($(".contentDiv").html() + "<br>")
-    //     }, 20)
-    // })
+    //内容自动保存
+    $(".contentDiv").on("change", function (){
+        alert(0)
+    })
 
     let editSpanFound = true;
     $(".editSpan").click(function () {
