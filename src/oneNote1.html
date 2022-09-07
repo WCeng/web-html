@@ -10,16 +10,16 @@
     <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
 
-<!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shCore.css">-->
-<!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shThemeDefault.css">-->
-<!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/XRegExp.js"></script>-->
-<!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shCore.js"></script>-->
-<!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJava.js"></script>-->
-<!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJScript.js"></script>-->
-<!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushSql.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--        SyntaxHighlighter.all()-->
-<!--    </script>-->
+    <!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shCore.css">-->
+    <!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shThemeDefault.css">-->
+    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/XRegExp.js"></script>-->
+    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shCore.js"></script>-->
+    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJava.js"></script>-->
+    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJScript.js"></script>-->
+    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushSql.js"></script>-->
+    <!--    <script type="text/javascript">-->
+    <!--        SyntaxHighlighter.all()-->
+    <!--    </script>-->
 </head>
 <body>
 
@@ -174,7 +174,6 @@
 </html>
 
 
-
 <script>
 
     Vue.component('ta', {
@@ -206,6 +205,7 @@
         methods: {
             showTitle: function (title) {
                 this.title = title;
+                tempTitle = title;
                 this.eachContent = localStorage.getItem(title);
                 setTimeout(function () {
                     imgAdapt()
@@ -265,14 +265,64 @@
 
     $(".codeTA").hide()
 
-    $(".contentDiv").on("paste", function (e) {
+    //内容自动保存
+    let i = 0;
+    let saveIndex = false;
+    $(".save").click(function () {
+        saveIndex = !saveIndex;
+        if (saveIndex) {
+            i = 0;
+            $(this).html("saving")
+
+            let interval = setInterval(function () {
+                saveContent()
+                i--;
+                console.log(i)
+                let but = $(".save").html();
+                $(".save").html(but + ".")
+                if (i % 4 == 0) {
+                    $(".save").html("saving");
+                }
+                if(i>0){
+                    clearInterval(interval)
+                    $(".save").html("保存");
+                }
+            }, 2000)
+
+        } else {
+            i = 2;
+        }
+
     })
 
+    let tempTitle = $(".knowledgeTitle").val();
+
+    function saveContent() {
+        let title = $(".knowledgeTitle").val()
+        if(title.length !== tempTitle.length){
+            return;
+        }
+
+        if (title.trim().length === 0) {
+            $(".knowledgeTitle").focus()
+            return;
+        }
+        let content = $(".contentDiv").html();
+        localStorage.setItem(title, content);
+    }
+
+    //双击标题清空
+    $(".knowledgeTitle").dblclick(function (){
+        $(this).val("");
+        $(this).focus();
+    })
+
+    //可编辑
     let editSpanFound = true;
     $(".editSpan").click(function () {
-        if(editSpanFound){
+        if (editSpanFound) {
             $(this).attr("style", "color: #000000")
-        }else {
+        } else {
             $(this).attr("style", "color: #999999")
         }
         editSpanFound = !editSpanFound;
@@ -287,7 +337,8 @@
         }
     })
     $(".editSpan").click()
-    function ifEdit(){
+
+    function ifEdit() {
         var contentDivCon = $(".contentDiv").attr("contenteditable");
         if (contentDivCon == "true") {
             $("pre").attr("contenteditable", "true")
@@ -329,7 +380,7 @@
     $(".contentDiv").on("mouseleave", "pre", function () {
         $(".copyButton").remove()
     })
-    $(".contentDiv").on("click", ".copyButton", function (){
+    $(".contentDiv").on("click", ".copyButton", function () {
         $(this).hide();
         var selection = window.getSelection();
         selection.removeAllRanges();
@@ -338,34 +389,25 @@
         range.selectNodeContents(con[0]); // 需要选中的dom节点
         selection.addRange(range);
 
-        try{
+        try {
             document.execCommand("copy", undefined, undefined)
-        }catch (e){
+        } catch (e) {
             console.log("浏览器不支持该功能")
         }
     })
 
     //图片识别
-    $(".contentDiv").on("dblclick", "img", function (){
+    $(".contentDiv").on("dblclick", "img", function () {
         let sourcedata = $(this).attr("src");
 
     })
 
-    $(".titleLink").click(function (){
-        $(".titleLink").each(function (){
+    $(".titleLink").click(function () {
+        $(".titleLink").each(function () {
             $(this).attr("class", "list-group-item list-group-item-success titleLink")
         })
         $(this).attr("class", "list-group-item list-group-item-warning titleLink")
     })
-
-
-
-
-
-
-
-
-
 
 
     // 编译和反编译
