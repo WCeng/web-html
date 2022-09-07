@@ -211,6 +211,7 @@
         },
 
         methods: {
+            //切换标题
             showTitle: function (title) {
                 this.title = title;
                 this.eachContent = localStorage.getItem(title);
@@ -228,7 +229,7 @@
             },
             //    删除标题
             deleteTitle: function (title) {
-                let ifDelete = confirm("确认要删除吗？");
+                let ifDelete = confirm("确认要删除吗？");z
                 if (ifDelete) {
                     let titleList = getTitle();
                     titleList = titleList.filter((x) => x !== title);
@@ -380,6 +381,9 @@
     //过长的代码缩小
     $(".contentDiv .showLink").remove()
     function shrinkCode(){
+        if($(".showLink") !== null){
+            return;
+        }
         $(".contentDiv pre").each(function () {
             let preHeight = $(this).css("height")
             // alert(preHeight)
