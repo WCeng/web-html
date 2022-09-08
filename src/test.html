@@ -1,172 +1,51 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>JS爬虫</title>
     <meta charset="UTF-8">
-
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
-    <script src="jquery-3.3.1.js" type="text/javascript"></script>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
+    <link href="https://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+    <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
 </head>
 <body>
-<div id="container"></div>
-<div id="input_area">
-            <span style="color: white;font-size:20px">输入网址：
-            </span><input type="text" id="url">
-    <input type="button" id="check" onclick="getSource()" value="提取文字">
-    <input type="button" id="check" value="查找图片" onclick="check_img()">
-    <textarea rows="30" cols="100" id="source"></textarea>
-</div>
-
-<div id="pic_container">
-    <div id="picCon_1" class="picConClass">
-    </div>
-    <div id="picCon_2" class="picConClass"></div>
-    <div id="picCon_3" class="picConClass"></div>
-    <div id="picCon_4" class="picConClass"></div>
-</div>
-
-
-</body>
-<script type="text/javascript">
-    var xmlHttp;
-    //用于创建XMLHttpRequest对象
-    function createXmlHttp() {
-        //根据window.XMLHttpRequest对象是否存在使用不同的创建方式
-        if (window.XMLHttpRequest) {
-            xmlHttp = new XMLHttpRequest();                  //FireFox、Opera等浏览器支持的创建方式
-        } else {
-            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");//IE浏览器支持的创建方式
-        }
-    }
-
-    //直接通过XMLHttpRequest对象获取远程网页源代码
-    function getSource() {
-        var url = document.getElementById("url").value;             //获取目标地址信息
-        //地址为空时提示用户输入
-        if (url == "") {
-            alert("请输入网页地址。");
-            return;
-        }
-
-        document.getElementById("source").value = "正在加载……";   //提示正在加载
-        createXmlHttp();                                            //创建XMLHttpRequest对象
-        xmlHttp.onreadystatechange = writeSource;                   //设置回调函数
-        xmlHttp.open("post", url, true);
-        xmlHttp.send(null);
-    }
-
-    //将远程网页源代码写入页面文字区域
-    function writeSource() {
-        if (xmlHttp.readyState == 4) {
-            document.getElementById("source").value = xmlHttp.responseText;
-            alert(xmlHttp.responseText.length)
-        }
-    }
-
-    function backposi(str, num) {
-        var n = 0;
-        for (var i = str.length; i >= 0; i--)
-            if (str.charAt(i) == '/') {
-                n++;
-                if (n == num) return i;
+<img  src="https://tse4-mm.cn.bing.net/th/id/OIP-C.QFdwl07_aviM1ch2KpyyFgHaEo?pid=ImgDet&rs=1">
+<script>
+    // 下载// 下载含有url的文件
+    function downloadUrlFile(url, fileName) {
+        const url2 = url.replace(/\\/g, '/');
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url2, true);
+        // xhr.responseType = 'blob';
+        // xhr.setRequestHeader('Authorization', 'Basic a2VybWl0Omtlcm1pdA==');
+        // 为了避免大文件影响用户体验，建议加loading
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                // 获取文件blob数据并保存
+                let blob = xhr.response;
+                alert(blob)
+                saveAs(blob, fileName);
             }
-
+        };
+        xhr.send();
     }
 
-    var keyUrl = new Array();
+    downloadUrlFile("https://wceng.github.io/web-html/src/oneNote1.html", "name")
 
-    function check_img() {//匹配出img字符串
-        var url = document.getElementById("url").value;
-        var key = xmlHttp.responseText;
-        keyUrl = key.match(/<img src=(.*?)>/g);
-        //第一次匹配出src后的字符
-        for (var i = 0; i < keyUrl.length; i++) {
-            var n = keyUrl[i].length;
-            var key = keyUrl[i];
-            var posi1 = 0, posi2 = 0;
-            for (var j = 0; j < n; j++) {
-                if (key.charAt(j) == '\"' && posi1 == 0) {
-                    posi1 = j;
-                    continue;
-                }
-                if (key.charAt(j) == '\"' && posi2 == 0) {
-                    posi2 = j;
-                    break;
-                }
-            }
-            keyUrl[i] = keyUrl[i].substring(posi1 + 1, posi2);
-        }
-        //第二次对url的相对路径、绝对路径匹配
-        for (var i = 0; i < keyUrl.length; i++) {
-            var num1 = (keyUrl[i].substring(0, 3).split('/')).length - 1;
-            var num2 = (url.split('/')).length - 1;
-            if (num1 == num2) {
-                keyUrl[i] = keyUrl[i].substring(2, keyUrl[i].length);
-            } else {
-                if (num1 == 1) {
-                    keyUrl[i] = url.substring(0, backposi(url, 2)) + keyUrl[i].substring(0, keyUrl[i].length);
-                }
-            }
-        }
-        increase_img();
-        check_text();
-    }
-
-    var imgflag = 0;
-
-    function increase_img() {
-        var div = $("<div class='pic'></div>");
-        var text = $("<text></text>");
-        var img = document.createElement("img");
-        img.src = keyUrl[imgflag];
-        var x, y;
-        img.onload = function () {
-            x = img.width;
-            y = this.height;
-            text.append(x + "*" + y + "px");
-
-            if (x > 360) {
-                img.height = y / x * 360;
-                img.width = 360;
-            }
-        }
-        if (imgflag % 4 == 0) {
-            $("#picCon_1").append(div);
-            div.append(img);
-            div.append('</br>');
-            div.append(text);
-        } else if (imgflag % 4 == 1) {
-            $("#picCon_2").append(div);
-            div.append(img);
-            div.append('</br>');
-            div.append(text);
-        } else if (imgflag % 4 == 2) {
-            $("#picCon_3").append(div);
-            div.append(img);
-            div.append('</br>');
-            div.append(text);
-        } else if (imgflag % 4 == 3) {
-            $("#picCon_4").append(div);
-            div.append(img);
-            div.append('</br>');
-            div.append(text);
-        }
-        imgflag++;
-        if (imgflag - 1 < keyUrl.length)
-            setTimeout("increase_img()", 200);
-        else
-            imgflag = 0;
-    }
-
-    function check_text() {
-        var key = xmlHttp.responseText.match(/>(.*?)</g);
-        for (var i = 0; i < key.length; i++) {
-            if (key[i].length == 3) key.splice(i, 1);
-            else {
-                key[i] = key[i].substring(1, key[i].length - 1);
-            }
-        }
-        document.getElementById("source").value = key;
+    function saveAs(data, name) {
+        const urlObject = window.URL || window.webkitURL || window;
+        const export_blob = new Blob([data]);
+//createElementNS() 方法可创建带有指定命名空间的元素节点。
+//此方法可返回一个 Element 对象。
+        const save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+        save_link.href = urlObject.createObjectURL(export_blob);
+        save_link.download = name;
+        save_link.click();
     }
 
 </script>
+</body>
 </html>

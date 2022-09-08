@@ -521,6 +521,25 @@
         localStorage.setItem("titles", titleStr);
     }
 
+    //    读取网络文件
+    function readNetFile(url) {
+        const url2 = url.replace(/\\/g, '/');
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url2, true);
+        // xhr.responseType = 'blob';
+        // xhr.setRequestHeader('Authorization', 'Basic a2VybWl0Omtlcm1pdA==');
+        // 为了避免大文件影响用户体验，建议加loading
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                // 获取文件blob数据并保存
+                blob = xhr.response;
+            }
+        };
+        xhr.send();
+        let blob;
+        return blob;
+    }
+
     //    备份文件(导出)
     $("button.exportButton").on("click", function () {
 
@@ -551,9 +570,30 @@
     }
 
     //    导入文件
-    $(".importButton").click(function () {
-        $("#fileInput").click()
-    })
+    //导入网络文件
+    var timeOutEvent;
+    $(".importButton").on({
+        touchstart: function(e){
+            timeOutEvent = setTimeout(function(){
+                //此处为长按事件-----在此显示遮罩层及删除按钮
+                let content = readNetFile("https://wceng.github.io/web-html/src/oneNoteData.txt")
+                alert(content);
+            },500);
+        },
+        touchmove: function(){
+            clearTimeout(timeOutEvent);
+            timeOutEvent = 0;
+            e.preventDefault();
+        },
+        touchend: function(e){
+            clearTimeout(timeOutEvent);
+            if(timeOutEvent!=0){//点击
+                //此处为点击事件----在此处添加跳转详情页
+                $("#fileInput").click()
+            }
+            return false;
+        }
+    });
 
     function getFileContent(value) {
         localStorage.clear()
@@ -587,6 +627,29 @@
                 location.reload()
             }
         }
+        function splitContentFile(content){
+            var titles = content.split("&&&")[0];
+            var contents = content.split("&&&")[1];
+            var contentList = contents.split("||||");
+            var index;
+            for (var i in contentList) {
+                if (contentList[i].trim().length === 0) {
+                    index = i;
+                    break;
+                }
+            }
+            if (null != index) {
+                contentList.splice(index, 1);
+            }
+            localStorage.setItem("titles", titles);
+            var titleList = titles.split("|||")
+            titleList.splice(titleList.length - 1, 1);
+            for (var y in titleList) {
+                localStorage.setItem(titleList[y], contentList[y])
+                location.reload()
+            }
+        }
+
     }
 </script>
 
