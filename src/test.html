@@ -1,98 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+    <title>JS爬虫</title>
     <meta charset="UTF-8">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shCore.css">
-    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shThemeDefault.css">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script src="jquery-3.3.1.js" type="text/javascript"></script>
 </head>
 <body>
-<pre  class="brush: java; ">
-        public class Person {
+<div id="container"></div>
+<div id="input_area">
+            <span style="color: white;font-size:20px">输入网址：
+            </span><input type="text" id="url">
+    <input type="button" id="check" onclick="getSource()" value="提取文字">
+    <input type="button" id="check" value="查找图片" onclick="check_img()">
+    <textarea rows="30" cols="100" id="source"></textarea>
+</div>
 
-        }
-    <div>snf</div>
-    </pre>
-<pre name="code" class="brush: js; gutter: false;">
-        function foo() {
-            var i = 3;
-        }
-    </pre>
-<pre class="brush: java; ">
-package com.example.myapplication.recyclerView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-
-import com.example.myapplication.R;
-
-public class LinearRecyclerActivity extends AppCompatActivity {
-
-    private RecyclerView mRvMain;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_linear_recyctal);
-
-        mRvMain = findViewById(R.id.rv_main);
-
-        mRvMain.setLayoutManager(new LinearLayoutManager(LinearRecyclerActivity.this));
-
-        mRvMain.addItemDecoration(new MyDecoration());
-
-        mRvMain.setAdapter(new LinearAdapter(LinearRecyclerActivity.this, new LinearAdapter.OnItemClickListener(){
-
-            @Override
-            public void onCLick(int position) {
-                Toast.makeText(LinearRecyclerActivity.this, "click"+position, Toast.LENGTH_SHORT).show();
-            }
-        }));
+<div id="pic_container">
+    <div id="picCon_1" class="picConClass">
+    </div>
+    <div id="picCon_2" class="picConClass"></div>
+    <div id="picCon_3" class="picConClass"></div>
+    <div id="picCon_4" class="picConClass"></div>
+</div>
 
 
-    }
-
-    class MyDecoration extends RecyclerView.ItemDecoration{
-        @Override
-        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            outRect.set(0,0,0,getResources().getDimensionPixelOffset(R.dimen.dividerHeight));
-        }
-    }
-}
-    </pre>
-<script type="syntaxhighlighter" class="brush: js">
-        <![CDATA[
-      function saveContent() {
-        let title = $(".knowledgeTitle").val()
-        if(title.length !== tempTitle.length){
-            return;
-        }
-
-        if (title.trim().length === 0) {
-            $(".knowledgeTitle").focus()
-            return;
-        }
-        let content = $(".contentDiv").html();
-        localStorage.setItem(title, content);
-    }
-        ]]>
-
-</script>
-<script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/XRegExp.js"></script>
-<script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shCore.js"></script>
-<script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJava.js"></script>
-<script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJScript.js"></script>
-<script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushSql.js"></script>
-<script type="text/javascript">
-    SyntaxHighlighter.all()
-</script>
 </body>
+<script type="text/javascript">
+    var xmlHttp;
+    //用于创建XMLHttpRequest对象
+    function createXmlHttp() {
+        //根据window.XMLHttpRequest对象是否存在使用不同的创建方式
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();                  //FireFox、Opera等浏览器支持的创建方式
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");//IE浏览器支持的创建方式
+        }
+    }
+
+    //直接通过XMLHttpRequest对象获取远程网页源代码
+    function getSource() {
+        var url = document.getElementById("url").value;             //获取目标地址信息
+        //地址为空时提示用户输入
+        if (url == "") {
+            alert("请输入网页地址。");
+            return;
+        }
+
+        document.getElementById("source").value = "正在加载……";   //提示正在加载
+        createXmlHttp();                                            //创建XMLHttpRequest对象
+        xmlHttp.onreadystatechange = writeSource;                   //设置回调函数
+        xmlHttp.open("post", url, true);
+        xmlHttp.send(null);
+    }
+
+    //将远程网页源代码写入页面文字区域
+    function writeSource() {
+        if (xmlHttp.readyState == 4) {
+            document.getElementById("source").value = xmlHttp.responseText;
+            alert(xmlHttp.responseText.length)
+        }
+    }
+
+    function backposi(str, num) {
+        var n = 0;
+        for (var i = str.length; i >= 0; i--)
+            if (str.charAt(i) == '/') {
+                n++;
+                if (n == num) return i;
+            }
+
+    }
+
+    var keyUrl = new Array();
+
+    function check_img() {//匹配出img字符串
+        var url = document.getElementById("url").value;
+        var key = xmlHttp.responseText;
+        keyUrl = key.match(/<img src=(.*?)>/g);
+        //第一次匹配出src后的字符
+        for (var i = 0; i < keyUrl.length; i++) {
+            var n = keyUrl[i].length;
+            var key = keyUrl[i];
+            var posi1 = 0, posi2 = 0;
+            for (var j = 0; j < n; j++) {
+                if (key.charAt(j) == '\"' && posi1 == 0) {
+                    posi1 = j;
+                    continue;
+                }
+                if (key.charAt(j) == '\"' && posi2 == 0) {
+                    posi2 = j;
+                    break;
+                }
+            }
+            keyUrl[i] = keyUrl[i].substring(posi1 + 1, posi2);
+        }
+        //第二次对url的相对路径、绝对路径匹配
+        for (var i = 0; i < keyUrl.length; i++) {
+            var num1 = (keyUrl[i].substring(0, 3).split('/')).length - 1;
+            var num2 = (url.split('/')).length - 1;
+            if (num1 == num2) {
+                keyUrl[i] = keyUrl[i].substring(2, keyUrl[i].length);
+            } else {
+                if (num1 == 1) {
+                    keyUrl[i] = url.substring(0, backposi(url, 2)) + keyUrl[i].substring(0, keyUrl[i].length);
+                }
+            }
+        }
+        increase_img();
+        check_text();
+    }
+
+    var imgflag = 0;
+
+    function increase_img() {
+        var div = $("<div class='pic'></div>");
+        var text = $("<text></text>");
+        var img = document.createElement("img");
+        img.src = keyUrl[imgflag];
+        var x, y;
+        img.onload = function () {
+            x = img.width;
+            y = this.height;
+            text.append(x + "*" + y + "px");
+
+            if (x > 360) {
+                img.height = y / x * 360;
+                img.width = 360;
+            }
+        }
+        if (imgflag % 4 == 0) {
+            $("#picCon_1").append(div);
+            div.append(img);
+            div.append('</br>');
+            div.append(text);
+        } else if (imgflag % 4 == 1) {
+            $("#picCon_2").append(div);
+            div.append(img);
+            div.append('</br>');
+            div.append(text);
+        } else if (imgflag % 4 == 2) {
+            $("#picCon_3").append(div);
+            div.append(img);
+            div.append('</br>');
+            div.append(text);
+        } else if (imgflag % 4 == 3) {
+            $("#picCon_4").append(div);
+            div.append(img);
+            div.append('</br>');
+            div.append(text);
+        }
+        imgflag++;
+        if (imgflag - 1 < keyUrl.length)
+            setTimeout("increase_img()", 200);
+        else
+            imgflag = 0;
+    }
+
+    function check_text() {
+        var key = xmlHttp.responseText.match(/>(.*?)</g);
+        for (var i = 0; i < key.length; i++) {
+            if (key[i].length == 3) key.splice(i, 1);
+            else {
+                key[i] = key[i].substring(1, key[i].length - 1);
+            }
+        }
+        document.getElementById("source").value = key;
+    }
+
+</script>
 </html>
