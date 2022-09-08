@@ -522,7 +522,8 @@
     }
 
     //    读取网络文件
-    function readNetFile(url) {
+    function readNetFile(url, callback) {
+        let blob;
         const url2 = url.replace(/\\/g, '/');
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url2, true);
@@ -533,12 +534,37 @@
             if (xhr.status === 200) {
                 // 获取文件blob数据并保存
                 blob = xhr.response;
+                // alert(blob)
+                callback(blob)
             }
         };
         xhr.send();
-        let blob;
-        return blob;
     }
+    //分割读取到的文件并保存到本地
+    function splitContentFile(content){
+        localStorage.clear();
+        var titles = content.split("&&&")[0];
+        var contents = content.split("&&&")[1];
+        var contentList = contents.split("||||");
+        var index;
+        for (var i in contentList) {
+            if (contentList[i].trim().length === 0) {
+                index = i;
+                break;
+            }
+        }
+        if (null != index) {
+            contentList.splice(index, 1);
+        }
+        localStorage.setItem("titles", titles);
+        var titleList = titles.split("|||")
+        titleList.splice(titleList.length - 1, 1);
+        for (var y in titleList) {
+            localStorage.setItem(titleList[y], contentList[y])
+            location.reload()
+        }
+    }
+
 
     //    备份文件(导出)
     $("button.exportButton").on("click", function () {
@@ -576,8 +602,12 @@
         touchstart: function(e){
             timeOutEvent = setTimeout(function(){
                 //此处为长按事件-----在此显示遮罩层及删除按钮
-                let content = readNetFile("https://wceng.github.io/web-html/src/oneNoteData.txt")
-                alert(content);
+                readNetFile("https://wceng.github.io/web-html/src/oneNoteData.txt", function (content){
+                    let ifConfirm = confirm("将导入GitHub上的oneNote数据文件?");
+                    if(ifConfirm){
+                        splitContentFile(content);
+                    }
+                })
             },500);
         },
         touchmove: function(){
@@ -606,28 +636,6 @@
 
         reader.onload = function () {
             var content = this.result;
-            var titles = content.split("&&&")[0];
-            var contents = content.split("&&&")[1];
-            var contentList = contents.split("||||");
-            var index;
-            for (var i in contentList) {
-                if (contentList[i].trim().length === 0) {
-                    index = i;
-                    break;
-                }
-            }
-            if (null != index) {
-                contentList.splice(index, 1);
-            }
-            localStorage.setItem("titles", titles);
-            var titleList = titles.split("|||")
-            titleList.splice(titleList.length - 1, 1);
-            for (var y in titleList) {
-                localStorage.setItem(titleList[y], contentList[y])
-                location.reload()
-            }
-        }
-        function splitContentFile(content){
             var titles = content.split("&&&")[0];
             var contents = content.split("&&&")[1];
             var contentList = contents.split("||||");
