@@ -556,6 +556,7 @@
     })
 
     function getFileContent(value) {
+        localStorage.clear()
         var doc = document.getElementById('fileInput')
         var fileName = doc.files[0].name;
         var selectedFile = doc.files[0];
