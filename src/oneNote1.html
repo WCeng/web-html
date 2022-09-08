@@ -30,7 +30,7 @@
         border: 1px solid #999999;
     }
 
-    .contentDiv {
+    .contentDiv{
         text-align: left;
         width: 100%;
         border: 1px solid pink;
@@ -38,7 +38,13 @@
         padding: 15px;
         margin-bottom: 200px;
         user-modify: read-only;
+        /*letter-spacing: 0.5px;*/
+        font-family: 宋体;
     }
+
+    /*.contentDiv div{*/
+    /*    font-family: 宋体;*/
+    /*}*/
 
     .codeDiv {
         text-align: left;
@@ -70,11 +76,7 @@
     }
 
     .save {
-        width: 100px;
-    }
-
-    .saveParentDiv {
-        text-align: center;
+        width: 70px;
     }
 
     .exportButton {
@@ -104,6 +106,7 @@
     pre {
         position: relative;
         outline: none;
+        display: block;
     }
 
     pre:hover {
@@ -127,6 +130,9 @@
         color: white;
         opacity: 0.7;
     }
+    .contentDiv img{
+        display: block;
+    }
 
 
 </style>
@@ -143,12 +149,15 @@
             </button>
             <span class="editSpan"><span class="glyphicon glyphicon-lock "></span></span>
             <button class="btn btn-success changeTheme">切换主题</button>
+            <button class="btn btn-success addLittleTitle">添加小标题</button>
             <button class="save btn btn-success pull-right">保存</button>
             <div style="clear: both"></div>
 
 
             <div class="contentDiv" contenteditable="true" v-html="eachContent" @blur="blurSaveContent($event)"
                  ref="contentDiv"></div>
+            <input class="littleTitleSetting" style="display: none" >
+
         </div>
     </div>
 
@@ -183,12 +192,16 @@
                 $(".codeTA").hide()
                 var value = $(".codeTA").val();
                 if (value.length === 0) {
-                    $(".contentDiv").html($(".contentDiv").html() + "<br>")
+                    $(".contentDiv").html($(".contentDiv").html() + "<br><br>")
+                    let el = $(".contentDiv")[0]
+                    removeRangeToLast(el)
                     return
                 }
                 value = html_encode(value)
-                $(".contentDiv").html($(".contentDiv").html() + "<pre>" + value + "</pre><br>")
+                $(".contentDiv").html($(".contentDiv").html() + "<pre>" + value + "</pre><br><br>")
                 $(".codeTA").val("");
+                let el = $(".contentDiv")[0]
+                removeRangeToLast(el)
             }
         }
     })
@@ -311,10 +324,26 @@
         localStorage.setItem(title, content);
     }
 
+    //自动点击保存按钮
+    $(".save").click();
     //双击标题清空
     $(".knowledgeTitle").dblclick(function (){
         $(this).val("");
         $(this).focus();
+    })
+
+    //添加内容里的小标题
+    $(".addLittleTitle").click(function (){
+        $(".littleTitleSetting").show();
+        $(".littleTitleSetting").focus();
+    })
+    $(".littleTitleSetting").blur(function (){
+        $(".littleTitleSetting").hide()
+        let littleTitle = $(this).val();
+        $(".contentDiv").html($(".contentDiv").html() + "<h4 style='font-family: 楷体; font-weight: bold'>"+littleTitle+"</h4>")
+        $(this).val("")
+        let el = $(".contentDiv")[0];
+        removeRangeToLast(el)
     })
 
     //可编辑
@@ -336,7 +365,8 @@
             $("pre").attr("contenteditable", "true")
         }
     })
-    $(".editSpan").click()
+    $(".editSpan").attr("style", "color: #999999")
+    // $(".editSpan").click()
 
     function ifEdit() {
         var contentDivCon = $(".contentDiv").attr("contenteditable");
@@ -398,8 +428,10 @@
 
     //图片识别
     $(".contentDiv").on("dblclick", "img", function () {
-        let sourcedata = $(this).attr("src");
-
+        $(this).css("width", "70%")
+    })
+    $(".contentDiv").on("click", "img", function () {
+        $(this).css("width", "100%")
     })
 
     $(".titleLink").click(function () {
@@ -444,6 +476,15 @@
     })
 
 
+    //可编辑元素里光标移到最后
+    function removeRangeToLast(el){
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
     //  得到标题
     function getTitle() {
         var titleList = new Array();

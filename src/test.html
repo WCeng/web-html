@@ -19,23 +19,70 @@
         }
     </pre>
 <pre class="brush: java; ">
-        public void javaMethod() {
-            int i = 3;
+package com.example.myapplication.recyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
+import com.example.myapplication.R;
+
+public class LinearRecyclerActivity extends AppCompatActivity {
+
+    private RecyclerView mRvMain;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_linear_recyctal);
+
+        mRvMain = findViewById(R.id.rv_main);
+
+        mRvMain.setLayoutManager(new LinearLayoutManager(LinearRecyclerActivity.this));
+
+        mRvMain.addItemDecoration(new MyDecoration());
+
+        mRvMain.setAdapter(new LinearAdapter(LinearRecyclerActivity.this, new LinearAdapter.OnItemClickListener(){
+
+            @Override
+            public void onCLick(int position) {
+                Toast.makeText(LinearRecyclerActivity.this, "click"+position, Toast.LENGTH_SHORT).show();
+            }
+        }));
+
+
+    }
+
+    class MyDecoration extends RecyclerView.ItemDecoration{
+        @Override
+        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.set(0,0,0,getResources().getDimensionPixelOffset(R.dimen.dividerHeight));
         }
+    }
+}
     </pre>
 <script type="syntaxhighlighter" class="brush: js">
         <![CDATA[
-      /**
-       * SyntaxHighlighter
-       */
-          function foo() {
-              if (counter <= 10)
-                  return;
-              for(int i = 0; i < 100; i++){
+      function saveContent() {
+        let title = $(".knowledgeTitle").val()
+        if(title.length !== tempTitle.length){
+            return;
+        }
 
-              }
-              // it works!
-          }
+        if (title.trim().length === 0) {
+            $(".knowledgeTitle").focus()
+            return;
+        }
+        let content = $(".contentDiv").html();
+        localStorage.setItem(title, content);
+    }
         ]]>
 
 </script>
