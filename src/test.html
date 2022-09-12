@@ -20,89 +20,35 @@
     /*}*/
 </style>
 <body>
-<img src="https://filedropper.com/d/secure/uploads/184006">
-<div class="">928ieu</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-<div>123214213</div>
-sldkfngsdlkgn
-<button>更换字体</button>
 
-<div class="dropdown">
-    <button type="button" class="btn " id="dropdownMenu1" data-toggle="dropdown">
-        http://192.168.1.189
-        <span class="caret"></span>
-    </button>
-
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-        <li>
-            <a href="#">HTML</a>
-        </li>
-        <li role="presentation">
-            <a href="#">CSS</a>
-        </li>
-
-        <li role="presentation">
-            <a href="#">Javascript</a>
-        </li>
-        <li role="presentation">
-            <a href="#">AJAX</a>
-        </li>
-    </ul>
-</div>
+<div contenteditable="true" style="border: 1px solid red ; width: 400px; height: 200px"></div>
+<button class="pull-right">雅苏普</button>
 <script>
-    // 下载// 下载含有url的文件
-    // $("*").mousedown(function (e){
-    //     if(3 == e.which){
-    //         var oEvent=e||event;
-    //         let left = oEvent.screenX;
-    //         let top = oEvent.screenY;
-    //         let selCon = window.getSelection();
-    //         if(selCon.toString().length !==0){
-    //             var rang = selCon.getRangeAt(0);
-    //             alert(rang)
-    //             let ele = $("<h1>123</h1>")[0]
-    //             alert(ele)
-    //             rang.surroundContents(ele);
-    //         }
-    //     }
-    // })
 
-    $("button").click(function () {
-        let selCon = window.getSelection();
-        if (selCon.toString().length !== 0) {
-            var rang = selCon.getRangeAt(0);
-            let ele = $("<span style='color: red; font-weight: bold; margin: 0px 2px;'><span/>")[0]
-            rang.surroundContents(ele);
-        }
+    $("button").click(function (){
+        let src = $("img").attr("src");
+        compressImage(src, 0.3)
     })
 
-    // document.addEventListener("selectionchange", (e) => {
-    //     console.log(document.getSelection());
-    //     var posX = 0, posY = 0;
-    //     var event = event || window.event;
-    //     if (event.pageX || event.pageY) {
-    //         posX = event.pageX;
-    //         posY = event.pageY;
-    //     } else if (event.clientX || event.clientY) {
-    //         posX = event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
-    //         posY = event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-    //     }
-    //     setTimeout(function (){
-    //
-    //         alert(posX)
-    //     }, 2000)
-    //
-    // });
+    function compressImage(base64, quality){
+        let img = new Image();
+        img.setAttribute("crossOrigin", "anonymous")
+        img.src = base64
+        img.onload = function (){
+            let imgWidth = img.width
+            let imgHeight = img.height
+        //    create canvas
+            let canvas = document.createElement("canvas")
+            let ctx = canvas.getContext("2d")
+            canvas.width = imgWidth
+            canvas.height = imgHeight
+            ctx.drawImage(img, 0, 0, imgWidth, imgHeight)
+            // 获取压缩后图片base64
+            let base = canvas.toDataURL("image/jpeg", quality)
+            $("img").attr("src", base)
+        }
+    }
 
 </script>
-<h3></h3>
 </body>
 </html>

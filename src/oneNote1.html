@@ -445,6 +445,16 @@
         $(this).css("width", "100%")
     })
 
+    $(".contentDiv").on("paste", function (){
+        setTimeout(function (){
+            let lastImg = $(".contentDiv img:not([compressed])").last();
+            if(lastImg.length !== 0){
+                compressImage(lastImg, 0.2);
+            }
+            lastImg.attr("compressed", "0")
+        }, 100)
+    })
+
     //标题高亮显示
     $(".titleLink").click(function () {
         $(".titleLink").each(function () {
@@ -455,6 +465,27 @@
     $(".titleLink").last().css("color", "#c40000")
 
 
+
+    //压缩图片
+    function compressImage(jqImgEle, quality){
+        let base64 = jqImgEle.attr("src");
+        let img = new Image();
+        img.setAttribute("crossOrigin", "anonymous")
+        img.src = base64
+        img.onload = function (){
+            let imgWidth = img.width
+            let imgHeight = img.height
+            //    create canvas
+            let canvas = document.createElement("canvas")
+            let ctx = canvas.getContext("2d")
+            canvas.width = imgWidth
+            canvas.height = imgHeight
+            ctx.drawImage(img, 0, 0, imgWidth, imgHeight)
+            // 获取压缩后图片base64
+            let base = canvas.toDataURL("image/jpeg", quality)
+            jqImgEle.attr("src", base);
+        }
+    }
     // 编译和反编译
     function html_encode(str) {
         var s = "";
