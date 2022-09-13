@@ -136,7 +136,7 @@
         display: block;
     }
 
-    .adjustDivAfterDiv button{
+    .adjustDivAfterDiv button {
         display: block;
     }
 
@@ -166,9 +166,13 @@
 
         </div>
         <div class="adjustDivAfterDiv" style="position:absolute; right: 0px; width: 10%; height: 100%; top: 0px; ">
-            <button class="btn btn-default" btn="1" style="position: absolute; display: none; color: #c40000 ;font-weight: 900; " >font</button>
-            <button class="btn btn-default" btn="2" style="position: absolute; display: none;font-weight: 900; " >font</button>
+            <button class="btn btn-default" btn="1"
+                    style="position: absolute; display: none; color: #c40000 ;font-weight: 900; ">font
+            </button>
+            <button class="btn btn-default" btn="2" style="position: absolute; display: none;font-weight: 900; ">font
+            </button>
         </div>
+        <span class="glyphicon glyphicon-minus hideTitle	" style="position: absolute; right: 10px; top: 10px; font-size: 20px; cursor: pointer"></span>
     </div>
 
 
@@ -335,7 +339,7 @@
     }
 
     //自动点击保存按钮
-//     $(".save").click();
+    //     $(".save").click();
     //双击标题清空
     $(".knowledgeTitle").dblclick(function () {
         $(this).val("");
@@ -354,6 +358,19 @@
         $(this).val("")
         let el = $(".contentDiv")[0];
         removeRangeToLast(el)
+    })
+
+    //隐藏标题栏
+    let hideTitleIndex = false;
+    $(".hideTitle").click(function (){
+        hideTitleIndex = !hideTitleIndex;
+        if (hideTitleIndex){
+            $(".titleDiv").hide();
+            $(".onenote").css("width", "100%")
+        }else {
+            $(".onenote").css("width", "80%")
+            $(".titleDiv").show()
+        }
     })
 
     //可编辑
@@ -445,10 +462,10 @@
         $(this).css("width", "100%")
     })
 
-    $(".contentDiv").on("paste", function (){
-        setTimeout(function (){
+    $(".contentDiv").on("paste", function () {
+        setTimeout(function () {
             let lastImg = $(".contentDiv img:not([compressed])").last();
-            if(lastImg.length !== 0){
+            if (lastImg.length !== 0) {
                 compressImage(lastImg, 0.2);
             }
             lastImg.attr("compressed", "0")
@@ -460,19 +477,18 @@
         $(".titleLink").each(function () {
             $(this).attr("style", "")
         })
-        $(this).css("color","#c40000")
+        $(this).css("color", "#c40000")
     })
     $(".titleLink").last().css("color", "#c40000")
 
 
-
     //压缩图片
-    function compressImage(jqImgEle, quality){
+    function compressImage(jqImgEle, quality) {
         let base64 = jqImgEle.attr("src");
         let img = new Image();
         img.setAttribute("crossOrigin", "anonymous")
         img.src = base64
-        img.onload = function (){
+        img.onload = function () {
             let imgWidth = img.width
             let imgHeight = img.height
             //    create canvas
@@ -486,6 +502,7 @@
             jqImgEle.attr("src", base);
         }
     }
+
     // 编译和反编译
     function html_encode(str) {
         var s = "";
@@ -630,25 +647,25 @@
     }
 
     //给选中字体加粗
-    $(".adjustDivAfterDiv").mouseenter(function (e){
-        if(window.getSelection().toString().length === 0){
+    $(".adjustDivAfterDiv").mouseenter(function (e) {
+        if (window.getSelection().toString().length === 0) {
             return;
         }
-        let topmouse = e.screenY-90;
+        let topmouse = e.screenY - 90;
         let toplength = parseInt($(document).scrollTop());
         let realTop = topmouse + toplength;
         let i = 0
-        $(".adjustDivAfterDiv button").each(function (){
+        $(".adjustDivAfterDiv button").each(function () {
             $(this).show()
-            $(this).css({"top": realTop+i})
+            $(this).css({"top": realTop + i})
             i = i + 35;
         })
     })
-    $(".adjustDivAfterDiv").mouseleave(function (){
+    $(".adjustDivAfterDiv").mouseleave(function () {
         $(".adjustDivAfterDiv button").hide()
     })
-    $(".adjustDivAfterDiv button").click(function (){
-        if($(this).attr("btn") === "1"){
+    $(".adjustDivAfterDiv button").click(function () {
+        if ($(this).attr("btn") === "1") {
             let selCon = window.getSelection();
             if (selCon.toString().length !== 0) {
                 var rang = selCon.getRangeAt(0);
@@ -657,7 +674,7 @@
                 window.getSelection().empty()
             }
         }
-        if($(this).attr("btn") === "2"){
+        if ($(this).attr("btn") === "2") {
             let selCon = window.getSelection();
             if (selCon.toString().length !== 0) {
                 var rang = selCon.getRangeAt(0);
@@ -668,9 +685,6 @@
         }
 
     })
-
-
-
 
 
 </script>
