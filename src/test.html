@@ -30,24 +30,7 @@
         compressImage(src, 0.3)
     })
 
-    function compressImage(base64, quality){
-        let img = new Image();
-        img.setAttribute("crossOrigin", "anonymous")
-        img.src = base64
-        img.onload = function (){
-            let imgWidth = img.width
-            let imgHeight = img.height
-        //    create canvas
-            let canvas = document.createElement("canvas")
-            let ctx = canvas.getContext("2d")
-            canvas.width = imgWidth
-            canvas.height = imgHeight
-            ctx.drawImage(img, 0, 0, imgWidth, imgHeight)
-            // 获取压缩后图片base64
-            let base = canvas.toDataURL("image/jpeg", quality)
-            $("img").attr("src", base)
-        }
-    }
+
 
 </script>
 </body>

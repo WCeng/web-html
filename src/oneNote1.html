@@ -171,6 +171,10 @@
             </button>
             <button class="btn btn-default" btn="2" style="position: absolute; display: none;font-weight: 900; ">font
             </button>
+            <button class="btn btn-default" btn="3" style="position: absolute; display: none;font-weight: 900; font-size: 17px;">font
+            </button>
+            <button class="btn btn-default" btn="4" style="position: absolute; display: none;font-weight: 900; color: #c9a958;">font
+            </button>
         </div>
         <span class="glyphicon glyphicon-minus hideTitle	" style="position: absolute; right: 10px; top: 10px; font-size: 20px; cursor: pointer"></span>
     </div>
@@ -354,7 +358,7 @@
     $(".littleTitleSetting").blur(function () {
         $(".littleTitleSetting").hide()
         let littleTitle = $(this).val();
-        $(".contentDiv").html($(".contentDiv").html() + "<h4 style='font-family: 楷体; font-weight: bold'>" + littleTitle + "</h4>")
+        $(".contentDiv").html($(".contentDiv").html() +"<br>" + "<h3 style='font-family: 楷体; font-weight: bold'>" + littleTitle + "</h3>")
         $(this).val("")
         let el = $(".contentDiv")[0];
         removeRangeToLast(el)
@@ -431,7 +435,7 @@
         found = !found;
     })
 
-
+    //复制代码
     $(".contentDiv").on("mouseenter", "pre", function () {
         $(this).append("<button class='copyButton' contenteditable='false'>复制</button>")
     })
@@ -651,7 +655,7 @@
         if (window.getSelection().toString().length === 0) {
             return;
         }
-        let topmouse = e.screenY - 90;
+        let topmouse = e.screenY - 250;
         let toplength = parseInt($(document).scrollTop());
         let realTop = topmouse + toplength;
         let i = 0
@@ -665,25 +669,29 @@
         $(".adjustDivAfterDiv button").hide()
     })
     $(".adjustDivAfterDiv button").click(function () {
-        if ($(this).attr("btn") === "1") {
-            let selCon = window.getSelection();
-            if (selCon.toString().length !== 0) {
-                var rang = selCon.getRangeAt(0);
-                let ele = $("<span  style='color: #c40000 ;font-weight: 900; margin: 0px 3px;'><span/>")[0]
-                rang.surroundContents(ele);
-                window.getSelection().empty()
+        let btnEle = $(this)
+        let selCon = window.getSelection();
+        let ele;
+        if (selCon.toString().length !== 0) {
+            var rang = selCon.getRangeAt(0);
+            if(btnEle.attr("btn") === "1"){
+                ele = $("<span  style='color: #c40000 ;font-weight: 900; margin: 0px 3px;'><span/>")[0]
+            }else {
+                if(btnEle.attr("btn") === "2"){
+                    ele = $("<span  style=' font-weight: 900; margin: 0px 3px;'><span/>")[0]
+                }else {
+                    if(btnEle.attr("btn") === "3"){
+                        ele = $("<span style='font-weight: 900; font-size: 17px;'></span>")[0]
+                    }else {
+                        if(btnEle.attr("btn") === "4"){
+                            ele = $("<span style='color: #c9a958; font-weight: 900; margin: 0px 3px'></span>")[0]
+                        }
+                    }
+                }
             }
+            rang.surroundContents(ele);
+            window.getSelection().empty()
         }
-        if ($(this).attr("btn") === "2") {
-            let selCon = window.getSelection();
-            if (selCon.toString().length !== 0) {
-                var rang = selCon.getRangeAt(0);
-                let ele = $("<span  style=' font-weight: 900; margin: 0px 3px;'><span/>")[0]
-                rang.surroundContents(ele);
-                window.getSelection().empty()
-            }
-        }
-
     })
 
 
