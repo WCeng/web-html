@@ -11,27 +11,105 @@
     <link href="https://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+
+    <link type="text/css" rel="stylesheet"
+          href="https://wceng.github.io/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+    <script src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shBrushJava.js"></script>
+    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shBrushXml.js"></script>
+    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+    <script type="text/javascript">SyntaxHighlighter.all();</script>
+
+
+
 </head>
+
 <style>
-    /*div{*/
-    /*    width: 100px;*/
-    /*    height: 100px;*/
-    /*    background-color: black;*/
-    /*}*/
+
 </style>
+
 <body>
+<pre class="brush: java">
+package com.example.myapplication;
 
-<div contenteditable="true" style="border: 1px solid red ; width: 400px; height: 200px"></div>
-<button class="pull-right">雅苏普</button>
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class BlankFragment1 extends Fragment {
+
+    private View root;
+    private TextView textView;
+    private Button button;
+
+//    引入接口对象
+    private IFragmentCallBack iFragmentCallBack;
+    public void setiFragmentCallBack(IFragmentCallBack fragmentCallBack){
+        iFragmentCallBack = fragmentCallBack;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = this.getArguments();
+        String message = bundle.getString("message");
+        Log.e("leo", "onCreate: " + message);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        if (root == null){
+//            拿到fragment_black1.xml布局的view；
+            root = inflater.inflate(R.layout.fragment_blank1, container, false);
+        }
+        textView = root.findViewById(R.id.tv);
+        button  = root.findViewById(R.id.btn);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                iFragmentCallBack.sendMsgToActivity("hello, I'm from Fragment");
+                String msg = iFragmentCallBack.getMsgFromActivity("null");
+                Toast.makeText(BlankFragment1.this.getContext(), msg, Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+        return root;
+    }
+}</pre>
+
+<script type="syntaxhighlighter" class="brush: js">
+        <![CDATA[
+      /**
+       * SyntaxHighlighter
+       */
+          function foo() {
+              if (counter <= 10)
+                  return;
+              // it works!
+          }
+        ]]>
+    </script>
+
 <script>
-
-    $("button").click(function (){
-        let src = $("img").attr("src");
-        compressImage(src, 0.3)
-    })
-
-
-
+    setTimeout(function (){
+        $(".toolbar").remove();
+        $(".container").css({"position": "relative", "top": "-30px"});
+    }, 500)
 </script>
 </body>
+
 </html>

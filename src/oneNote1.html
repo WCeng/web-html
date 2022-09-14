@@ -10,20 +10,18 @@
     <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
 
-    <!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shCore.css">-->
-    <!--    <link rel="stylesheet" type="text/css" href="https://wceng.github.io/SyntaxHighlighter/styles/shThemeDefault.css">-->
-    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/XRegExp.js"></script>-->
-    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shCore.js"></script>-->
-    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJava.js"></script>-->
-    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushJScript.js"></script>-->
-    <!--    <script type="text/javascript" src="https://wceng.github.io/SyntaxHighlighter/scripts/shBrushSql.js"></script>-->
-    <!--    <script type="text/javascript">-->
-    <!--        SyntaxHighlighter.all()-->
-    <!--    </script>-->
+    <link type="text/css" rel="stylesheet"
+          href="https://wceng.github.io/syntaxhighlighter_3.0.83/styles/shCoreDefault.css" id="css1"/>
+    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shCore.js" id="js1"></script>
+
 </head>
 <body>
 
 <style>
+    body{
+        background-color: #C7EDCC;
+    }
+
     .onenote {
         /*text-align: center;*/
         width: 80%;
@@ -34,7 +32,7 @@
     .contentDiv {
         text-align: left;
         width: 100%;
-        border: 1px solid pink;
+        border: 1px dashed #999999;
         outline: none;
         padding: 15px;
         margin-bottom: 200px;
@@ -110,15 +108,15 @@
         display: block;
     }
 
-    pre:hover {
-        cursor: pointer;
-    }
+    /*pre:hover {*/
+    /*    cursor: pointer;*/
+    /*}*/
 
     .copyButton {
         position: absolute;
         right: 0px;
         top: 0px;
-        opacity: 0.6;
+        opacity: 0.4;
         display: block;
     }
 
@@ -140,6 +138,13 @@
         display: block;
     }
 
+    .syntaxhighlighter .toolbar{
+        display: none !important;
+    }
+
+    .gutter .line{
+        cursor: pointer;
+    }
 
 </style>
 
@@ -150,9 +155,6 @@
             <button class="importButton btn btn-info"><span class="	glyphicon glyphicon-import"></span> 导入</button>
             <input type="text" class="knowledgeTitle form-control" v-model="title" v-on:blur="blurSaveTitle">
 
-            <button class="addCodeButton" v-on:click="addCode">
-                <span class="glyphicon glyphicon-plus" title="添加代码"></span>
-            </button>
             <span class="editSpan"><span class="glyphicon glyphicon-lock "></span></span>
             <button class="btn btn-success changeTheme">切换主题</button>
             <button class="btn btn-success addLittleTitle">添加小标题</button>
@@ -175,6 +177,17 @@
             </button>
             <button class="btn btn-default" btn="4" style="position: absolute; display: none;font-weight: 900; color: #c9a958;">font
             </button>
+
+            <button class="addCodeButton" style="display: none; position: absolute" v-on:click="addDefaultCode">D
+                <span class="glyphicon glyphicon-plus" title="添加代码"></span>
+            </button>
+            <button class="addCodeButton" style="display: none; position: absolute" v-on:click="addJavaCode">J
+                <span class="glyphicon glyphicon-plus" title="添加代码"></span>
+            </button>
+            <button class="addCodeButton" style="display: none; position: absolute" v-on:click="addXmlCode">X
+                <span class="glyphicon glyphicon-plus" title="添加代码"></span>
+            </button>
+
         </div>
         <span class="glyphicon glyphicon-minus hideTitle	" style="position: absolute; right: 10px; top: 10px; font-size: 20px; cursor: pointer"></span>
     </div>
@@ -194,7 +207,7 @@
 
 
     <input type="file" class="hidden" id="fileInput" onchange="getFileContent(value)">
-    <ta></ta>
+    <textarea class="codeTA" style="display: none" v-on:blur="blurSaveCode"></textarea>
 
 </div>
 </body>
@@ -203,34 +216,14 @@
 
 <script>
 
-    Vue.component('ta', {
-        template: '<textarea class="codeTA" v-on:blur="blurSaveCode"></textarea>',
-        methods: {
-            blurSaveCode: function () {
-                $(".codeTA").hide()
-                var value = $(".codeTA").val();
-                if (value.length === 0) {
-                    $(".contentDiv").html($(".contentDiv").html() + "<br><br>")
-                    let el = $(".contentDiv")[0]
-                    removeRangeToLast(el)
-                    return
-                }
-                value = html_encode(value)
-                $(".contentDiv").html($(".contentDiv").html() + "<pre>" + value + "</pre><br><br>")
-                $(".codeTA").val("");
-                let el = $(".contentDiv")[0]
-                removeRangeToLast(el)
-            }
-        }
-    })
 
-    new Vue({
+    let vue1 = new Vue({
         el: "#bigDiv",
         data: {
             titles: getTitle(),
             eachContent: localStorage.getItem(getTitle()[getTitle().length - 1]),
             title: getTitle()[getTitle().length - 1],
-
+            JORX: "J"
         },
 
         methods: {
@@ -285,11 +278,96 @@
                     imgAdapt()
                 }, 10)
             },
-            //    添加代码
-            addCode: function () {
+            //添加默认代码
+            addDefaultCode: function (){
+                this.JORX = "D";
                 $(".codeTA").show()
                 $(".codeTA").focus()
+
+            },
+            //    添加Java代码
+            addJavaCode: function () {
+                this.JORX = "J"
+                $(".codeTA").show()
+                $(".codeTA").focus()
+            },
+        //    添加Xml代码
+            addXmlCode: function (){
+                this.JORX = "X"
+                $(".codeTA").show()
+                $(".codeTA").focus()
+            },
+            //TA失去焦点添加代码
+            blurSaveCode: function () {
+                $(".codeTA").hide()
+                var value = $(".codeTA").val();
+                if (value.length === 0) {
+                    $(".contentDiv").html($(".contentDiv").html() + "<br><br>")
+                    let el = $(".contentDiv")[0]
+                    removeRangeToLast(el)
+                    return
+                }
+
+                // value = html_encode(value)
+                let preele;
+                if (this.JORX === "J"){
+                    preele = $("<pre class='brush: java'>");
+                } else {
+                    if(this.JORX === "X"){
+                        preele = $("<pre class='brush: xml'>")
+                    }else {
+                        value = html_encode(value)
+                        preele = $("<pre>")
+                    }
+                }
+                preele.append(value);
+                preele.appendTo($(".contentDiv"));
+                $(".contentDiv").html($(".contentDiv").html() + "<br><br>")
+                $(".codeTA").val("");
+                //重新渲染代码高亮
+                SyntaxHighlighter.highlight();
+                let el = $(".contentDiv")[0]
+                removeRangeToLast(el)
             }
+        }
+    })
+
+
+
+
+
+    //新增或重要代码标记
+    let backgroundIndex = false;
+    $(".contentDiv").on("click", ".gutter .line", function (){
+        let ifSelected = typeof ($(this).attr("style")) === "undefined";
+        if(ifSelected){
+            $(this).attr("style", "background-color: #2c0 !important")
+            let rowIndex = parseInt($(this).text()) - 1;
+            $(this).parent().next().find(".line:eq("+ rowIndex +")").attr("style", "background-color: #dfdfdf !important")
+        }else {
+            $(this).removeAttr("style");
+            let rowIndex = parseInt($(this).text()) - 1;
+            $(this).parent().next().find(".line:eq("+ rowIndex +")").removeAttr("style")
+
+        }
+
+    })
+
+    //屏蔽鼠标右击
+    $(".adjustDivAfterDiv").bind("contextmenu", function(){
+        return false;
+    })
+    //鼠标右击唤出添加代码按钮
+    $(".adjustDivAfterDiv").mousedown(function (e){
+        if(e.which === 3){
+            $(".addCodeButton").show();
+            let top = e.screenY-100;
+            let topscroll = parseInt($(document).scrollTop());
+            $(".addCodeButton").each(function (){
+                $(this).show();
+                $(this).css({"left":"0px", "top":top+topscroll, "width":"50px"});
+                top += 28;
+            })
         }
     })
 
@@ -436,10 +514,10 @@
     })
 
     //复制代码
-    $(".contentDiv").on("mouseenter", "pre", function () {
+    $(".contentDiv").on("mouseenter", "pre, .syntaxhighlighter", function () {
         $(this).append("<button class='copyButton' contenteditable='false'>复制</button>")
     })
-    $(".contentDiv").on("mouseleave", "pre", function () {
+    $(".contentDiv").on("mouseleave", "pre, .syntaxhighlighter", function () {
         $(".copyButton").remove()
     })
     $(".contentDiv").on("click", ".copyButton", function () {
@@ -447,8 +525,12 @@
         var selection = window.getSelection();
         selection.removeAllRanges();
         var range = document.createRange();
-        let con = $(this).parent().get();
-        range.selectNodeContents(con[0]); // 需要选中的dom节点
+        let con = $(this).parent();
+        if(typeof (con.find("td.code")[0]) !== "undefined"){
+            range.selectNodeContents(con.find("td.code")[0]); // 需要选中的dom节点
+        }else {
+            range.selectNodeContents(con[0]);
+        }
         selection.addRange(range);
 
         try {
@@ -659,7 +741,7 @@
         let toplength = parseInt($(document).scrollTop());
         let realTop = topmouse + toplength;
         let i = 0
-        $(".adjustDivAfterDiv button").each(function () {
+        $(".adjustDivAfterDiv button:not(.addCodeButton)").each(function () {
             $(this).show()
             $(this).css({"top": realTop + i})
             i = i + 35;
