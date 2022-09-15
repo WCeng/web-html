@@ -309,19 +309,26 @@
                     return
                 }
 
-                // value = html_encode(value)
+                // value = HTMLEncode(value)
                 let preele;
                 if (this.JORX === "J"){
-                    preele = $("<pre class='brush: java'>");
+                    preele = $("<script type='syntaxhighlighter' class='brush: java'>");
+                    let str = "<![CDATA[" + value + "]]>";
+                    str = HTMLEncode(str);
+                    preele.append(str)
                 } else {
                     if(this.JORX === "X"){
-                        preele = $("<pre class='brush: xml'>")
+                        preele = $("<script type='syntaxhighlighter' class='brush: xml'>")
+                        let str = "<![CDATA[" + value + "]]>";
+                        str = HTMLEncode(str);
+                        preele.append(str)
                     }else {
                         value = html_encode(value)
                         preele = $("<pre>")
+                        preele.append(value)
                     }
                 }
-                preele.append(value);
+
                 preele.appendTo($(".contentDiv"));
                 $(".contentDiv").html($(".contentDiv").html() + "<br><br>")
                 $(".codeTA").val("");
@@ -603,6 +610,14 @@
         s = s.replace(/\n/g, "<br/>");
         return s;
     }
+    //两个都是转译
+    function HTMLEncode(html) {
+        var temp = document.createElement("div");
+        (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
+        var output = temp.innerHTML;
+        temp = null;
+        return output;
+    }
 
     //    标题失去焦点保存
     $(".knowledgeTitle").blur(function () {
@@ -775,6 +790,12 @@
             rang.surroundContents(ele);
             window.getSelection().empty()
         }
+    })
+
+    $("pre, .syntaxhighlighter").scroll(function (){
+        let left = $(this).scrollLeft();
+        let btn = $(this).find(".copyButton")
+        btn.css("right", -left);
     })
 
 
