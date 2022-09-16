@@ -367,6 +367,7 @@
     $(".contentDiv").on("dblclick", ".gutter .line", function () {
         $(this).attr("style", "background-color: #2c0 !important")
         let rowIndex = parseInt($(this).text()) - 1;
+        $(this).parent().next().find(".line:eq(" + rowIndex + ")").attr("style", "background-color: #dfdfdf !important");
 
         dblIndexFound = !dblIndexFound;
         if (dblIndexFound) {
@@ -374,6 +375,9 @@
             firstClickEle = $(this);
         } else {
             constantRowIndex2 = rowIndex;
+            if(constantRowIndex2  <= constantRowIndex1){
+                return;
+            }
             $(this).parent().next().find(".line:eq(" + constantRowIndex1 + ")")
                 .nextUntil($(this).parent().next().find(".line:eq(" + constantRowIndex2 + ")"))
                 .each(function () {
@@ -383,7 +387,6 @@
                 })
         }
 
-        $(this).parent().next().find(".line:eq(" + rowIndex + ")").attr("style", "background-color: #dfdfdf !important");
     })
 
     //屏蔽鼠标右击
