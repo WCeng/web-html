@@ -12,13 +12,14 @@
 
     <link type="text/css" rel="stylesheet"
           href="https://wceng.github.io/syntaxhighlighter_3.0.83/styles/shCoreDefault.css" id="css1"/>
-    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shCore.js" id="js1"></script>
+    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shCore.js"
+            id="js1"></script>
 
 </head>
 <body>
 
 <style>
-    body{
+    body {
         background-color: #C7EDCC;
     }
 
@@ -138,11 +139,11 @@
         display: block;
     }
 
-    .syntaxhighlighter .toolbar{
+    .syntaxhighlighter .toolbar {
         display: none !important;
     }
 
-    .gutter .line{
+    .gutter .line {
         cursor: pointer;
     }
 
@@ -173,9 +174,11 @@
             </button>
             <button class="btn btn-default" btn="2" style="position: absolute; display: none;font-weight: 900; ">font
             </button>
-            <button class="btn btn-default" btn="3" style="position: absolute; display: none;font-weight: 900; font-size: 17px;">font
+            <button class="btn btn-default" btn="3"
+                    style="position: absolute; display: none;font-weight: 900; font-size: 17px;">font
             </button>
-            <button class="btn btn-default" btn="4" style="position: absolute; display: none;font-weight: 900; color: #c9a958;">font
+            <button class="btn btn-default" btn="4"
+                    style="position: absolute; display: none;font-weight: 900; color: #c9a958;">font
             </button>
 
             <button class="addCodeButton" style="display: none; position: absolute" v-on:click="addDefaultCode">D
@@ -189,7 +192,8 @@
             </button>
 
         </div>
-        <span class="glyphicon glyphicon-minus hideTitle	" style="position: absolute; right: 10px; top: 10px; font-size: 20px; cursor: pointer"></span>
+        <span class="glyphicon glyphicon-minus hideTitle	"
+              style="position: absolute; right: 10px; top: 10px; font-size: 20px; cursor: pointer"></span>
     </div>
 
 
@@ -280,7 +284,7 @@
                 }, 10)
             },
             //添加默认代码
-            addDefaultCode: function (){
+            addDefaultCode: function () {
                 this.JORX = "D";
                 $(".codeTA").show()
                 $(".codeTA").focus()
@@ -292,8 +296,8 @@
                 $(".codeTA").show()
                 $(".codeTA").focus()
             },
-        //    添加Xml代码
-            addXmlCode: function (){
+            //    添加Xml代码
+            addXmlCode: function () {
                 this.JORX = "X"
                 $(".codeTA").show()
                 $(".codeTA").focus()
@@ -311,18 +315,18 @@
 
                 // value = HTMLEncode(value)
                 let preele;
-                if (this.JORX === "J"){
+                if (this.JORX === "J") {
                     preele = $("<script type='syntaxhighlighter' class='brush: java'>");
                     let str = "<![CDATA[" + value + "]]>";
                     str = HTMLEncode(str);
                     preele.append(str)
                 } else {
-                    if(this.JORX === "X"){
+                    if (this.JORX === "X") {
                         preele = $("<script type='syntaxhighlighter' class='brush: xml'>")
                         let str = "<![CDATA[" + value + "]]>";
                         str = HTMLEncode(str);
                         preele.append(str)
-                    }else {
+                    } else {
                         value = html_encode(value)
                         preele = $("<pre>")
                         preele.append(value)
@@ -341,39 +345,60 @@
     })
 
 
-
-
-
     //新增或重要代码标记
     let backgroundIndex = false;
-    $(".contentDiv").on("click", ".gutter .line", function (){
+    let constantRowIndex1;
+    let constantRowIndex2;
+    let dblIndexFound = false;
+    $(".contentDiv").on("click", ".gutter .line", function () {
         let ifSelected = typeof ($(this).attr("style")) === "undefined";
-        if(ifSelected){
+        if (ifSelected) {
             $(this).attr("style", "background-color: #2c0 !important")
             let rowIndex = parseInt($(this).text()) - 1;
-            $(this).parent().next().find(".line:eq("+ rowIndex +")").attr("style", "background-color: #dfdfdf !important")
-        }else {
+            $(this).parent().next().find(".line:eq(" + rowIndex + ")").attr("style", "background-color: #dfdfdf !important")
+        } else {
             $(this).removeAttr("style");
             let rowIndex = parseInt($(this).text()) - 1;
-            $(this).parent().next().find(".line:eq("+ rowIndex +")").removeAttr("style")
+            $(this).parent().next().find(".line:eq(" + rowIndex + ")").removeAttr("style")
 
         }
+    })
+    let firstClickEle;
+    $(".contentDiv").on("dblclick", ".gutter .line", function () {
+        $(this).attr("style", "background-color: #2c0 !important")
+        let rowIndex = parseInt($(this).text()) - 1;
 
+        dblIndexFound = !dblIndexFound;
+        if (dblIndexFound) {
+            constantRowIndex1 = rowIndex;
+            firstClickEle = $(this);
+        } else {
+            constantRowIndex2 = rowIndex;
+            $(this).parent().next().find(".line:eq(" + constantRowIndex1 + ")")
+                .nextUntil($(this).parent().next().find(".line:eq(" + constantRowIndex2 + ")"))
+                .each(function () {
+                    firstClickEle.next().attr("style", "background-color: #2c0 !important");
+                    firstClickEle = firstClickEle.next();
+                    $(this).attr("style", "background-color: #dfdfdf !important");
+                })
+        }
+
+        $(this).parent().next().find(".line:eq(" + rowIndex + ")").attr("style", "background-color: #dfdfdf !important");
     })
 
     //屏蔽鼠标右击
-    $(".adjustDivAfterDiv").bind("contextmenu", function(){
+    $(".adjustDivAfterDiv").bind("contextmenu", function () {
         return false;
     })
     //鼠标右击唤出添加代码按钮
-    $(".adjustDivAfterDiv").mousedown(function (e){
-        if(e.which === 3){
+    $(".adjustDivAfterDiv").mousedown(function (e) {
+        if (e.which === 3) {
             $(".addCodeButton").show();
-            let top = e.screenY-100;
+            let top = e.screenY - 100;
             let topscroll = parseInt($(document).scrollTop());
-            $(".addCodeButton").each(function (){
+            $(".addCodeButton").each(function () {
                 $(this).show();
-                $(this).css({"left":"0px", "top":top+topscroll, "width":"50px"});
+                $(this).css({"left": "0px", "top": top + topscroll, "width": "50px"});
                 top += 28;
             })
         }
@@ -444,7 +469,7 @@
     $(".littleTitleSetting").blur(function () {
         $(".littleTitleSetting").hide()
         let littleTitle = $(this).val();
-        $(".contentDiv").html($(".contentDiv").html() +"<br>" + "<h3 style='font-family: 楷体; font-weight: bold'>" + littleTitle + "</h3>")
+        $(".contentDiv").html($(".contentDiv").html() + "<br>" + "<h3 style='font-family: 楷体; font-weight: bold'>" + littleTitle + "</h3>")
         $(this).val("")
         let el = $(".contentDiv")[0];
         removeRangeToLast(el)
@@ -452,12 +477,12 @@
 
     //隐藏标题栏
     let hideTitleIndex = false;
-    $(".hideTitle").click(function (){
+    $(".hideTitle").click(function () {
         hideTitleIndex = !hideTitleIndex;
-        if (hideTitleIndex){
+        if (hideTitleIndex) {
             $(".titleDiv").hide();
             $(".onenote").css("width", "100%")
-        }else {
+        } else {
             $(".onenote").css("width", "80%")
             $(".titleDiv").show()
         }
@@ -534,9 +559,9 @@
         selection.removeAllRanges();
         var range = document.createRange();
         let con = $(this).parent();
-        if(typeof (con.find("td.code")[0]) !== "undefined"){
+        if (typeof (con.find("td.code")[0]) !== "undefined") {
             range.selectNodeContents(con.find("td.code")[0]); // 需要选中的dom节点
-        }else {
+        } else {
             range.selectNodeContents(con[0]);
         }
         selection.addRange(range);
@@ -610,6 +635,7 @@
         s = s.replace(/\n/g, "<br/>");
         return s;
     }
+
     //两个都是转译
     function HTMLEncode(html) {
         var temp = document.createElement("div");
@@ -772,16 +798,16 @@
         let ele;
         if (selCon.toString().length !== 0) {
             var rang = selCon.getRangeAt(0);
-            if(btnEle.attr("btn") === "1"){
+            if (btnEle.attr("btn") === "1") {
                 ele = $("<span  style='color: #c40000 ;font-weight: 900; margin: 0px 3px;'><span/>")[0]
-            }else {
-                if(btnEle.attr("btn") === "2"){
+            } else {
+                if (btnEle.attr("btn") === "2") {
                     ele = $("<span  style=' font-weight: 900; margin: 0px 3px;'><span/>")[0]
-                }else {
-                    if(btnEle.attr("btn") === "3"){
+                } else {
+                    if (btnEle.attr("btn") === "3") {
                         ele = $("<span style='font-weight: 900; font-size: 17px;'></span>")[0]
-                    }else {
-                        if(btnEle.attr("btn") === "4"){
+                    } else {
+                        if (btnEle.attr("btn") === "4") {
                             ele = $("<span style='color: #c9a958; font-weight: 900; margin: 0px 3px'></span>")[0]
                         }
                     }
@@ -790,12 +816,6 @@
             rang.surroundContents(ele);
             window.getSelection().empty()
         }
-    })
-
-    $("pre, .syntaxhighlighter").scroll(function (){
-        let left = $(this).scrollLeft();
-        let btn = $(this).find(".copyButton")
-        btn.css("right", -left);
     })
 
 
