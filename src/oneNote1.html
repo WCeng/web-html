@@ -39,7 +39,7 @@
         margin-bottom: 200px;
         user-modify: read-only;
         /*letter-spacing: 0.5px;*/
-        font-family: 华文楷体;
+        font-family: "Helvetica Neue",Helvetica,Tahoma,Arial,STXihei,"Microsoft YaHei",微软雅黑,sans-serif;
     }
 
     /*.contentDiv div{*/
@@ -372,6 +372,7 @@
         dblIndexFound = !dblIndexFound;
         if (dblIndexFound) {
             constantRowIndex1 = rowIndex;
+            constantRowIndex2 = -1;
             firstClickEle = $(this);
         } else {
             constantRowIndex2 = rowIndex;
