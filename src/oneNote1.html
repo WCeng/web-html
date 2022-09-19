@@ -825,18 +825,23 @@
 //    调整标题位置
     let titlelinkIndex;
     $(".titleLink").mousedown(function (e){
+        let titleThis = $(this)
         let titleText = $(this).text();
         let titleTextList = titleText.split(".");
         titlelinkIndex = parseInt(titleTextList[0]);
         if(e.which === 3){
-            $("<input id='changeTitleSite'>").appendTo($(".onenote"));
+            $("<input id='changeTitleSite' style='width: 30px'>").appendTo(titleThis);
             setTimeout(function (){
                 $("#changeTitleSite").focus()
             }, 100)
         }
     })
-    $(".onenote").on("blur", "#changeTitleSite", function (){
+    $(".titleDiv").on("blur", "#changeTitleSite", function (){
         let indexNum = $("#changeTitleSite").val();
+        if(indexNum.length ===0){
+            $("#changeTitleSite").remove()
+            return;
+        }
         indexNum = parseInt(indexNum);
 
         let tit = getTitle();
