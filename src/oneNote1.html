@@ -524,7 +524,6 @@
         }
     }
 
-
     //图片自适应
     let divWidth = $(".contentDiv").css("width");
 
@@ -838,13 +837,17 @@
     })
     $(".titleDiv").on("blur", "#changeTitleSite", function (){
         let indexNum = $("#changeTitleSite").val();
-        if(indexNum.length ===0){
+        if(indexNum.length <=0){
             $("#changeTitleSite").remove()
             return;
         }
         indexNum = parseInt(indexNum);
 
         let tit = getTitle();
+        if(indexNum <1 || tit.length < indexNum){
+            $("#changeTitleSite").remove()
+            return;
+        }
         let TitleChangedList = [];
         let changedTitle;
         for (let j = 0; j <tit.length; j++) {
