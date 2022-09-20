@@ -146,6 +146,15 @@
     .gutter .line {
         cursor: pointer;
     }
+    .titleDiv{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: 1000px;
+        padding-bottom: 500px;
+    }
+    .titleDiv::-webkit-scrollbar{
+        display: none;
+    }
 
 </style>
 
@@ -213,6 +222,7 @@
     <div style="clear: both"></div>
     <input type="file" class="hidden" id="fileInput" onchange="getFileContent(value)">
     <textarea class="codeTA" style="display: none" v-on:blur="blurSaveCode"></textarea>
+    <span class='glyphicon glyphicon-chevron-up upToTop' style='font-size: 30px; display: none'></span>
 
 </div>
 </body>
@@ -867,6 +877,7 @@
         $("#changeTitleSite").remove()
     })
 
+    //页面滚动自动隐藏标题栏
     let scrollIndex = -1;
     $(document).scroll(function (){
         let top = $(this).scrollTop();
@@ -875,14 +886,30 @@
             if(top > 300){
                 scrollIndex = 0;
                 $(".hideTitle").click()
+                $(".upToTop").show();
             }
         }
         if(scrollIndex === 0 && top < 300){
             $(".hideTitle").click()
             scrollIndex = 1;
+            $(".upToTop").hide()
         }
+    })
+
+//  页面滚到顶部
+    $(".upToTop").click(function (){
+        $(document).scrollTop(0)
     })
 
 
 </script>
+
+<style>
+    .upToTop{
+        position: fixed;
+        top: 700px;
+        right: 20px;
+        cursor: pointer;
+    }
+</style>
 
