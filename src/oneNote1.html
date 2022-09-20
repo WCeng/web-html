@@ -87,7 +87,7 @@
     .importButton {
         position: absolute;
         top: 10px;
-        left: 100px;
+        left: 50px;
     }
 
     .adjustDiv {
@@ -161,8 +161,8 @@
 <div id="bigDiv">
     <div class="onenote pull-left" id="oneNote">
         <div class="adjustDiv">
-            <button class="exportButton btn btn-info"><span class="	glyphicon glyphicon-export"></span> 导出</button>
-            <button class="importButton btn btn-info"><span class="	glyphicon glyphicon-import"></span> 导入</button>
+            <button class="exportButton btn btn-info"><span class="	glyphicon glyphicon-export"></span> </button>
+            <button class="importButton btn btn-info"><span class="	glyphicon glyphicon-import"></span> </button>
             <input type="text" class="knowledgeTitle form-control" v-model="title" v-on:blur="blurSaveTitle">
 
             <span class="editSpan"><span class="glyphicon glyphicon-lock "></span></span>
@@ -208,8 +208,13 @@
 
     <div class="pull-right titleDiv" id="titleDiv">
         <div class="list-group listTitle">
-            <a href="#" v-on:click="addTitle" class="list-group-item list-group-item-default addTitleLink"><span
-                    class="glyphicon glyphicon-plus"></span></a>
+            <a href="#" style="width: 50px; display: inline-block" v-on:click="addTitle" class="list-group-item list-group-item-default addTitleLink">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <a href="#" style="width: 50px; display: inline-block" class="list-group-item list-group-item-default searchTitle">
+                <span class="glyphicon glyphicon-search"></span>
+            </a>
+            <input class="searchInput " style="display: none; width: 50px; outline: none">
             <a href="#" v-for="(titleLink,index) in titles" v-on:click="showTitle(titleLink)"
                class="list-group-item list-group-item-success titleLink">
                 {{index + 1 + ".  " + titleLink}}
@@ -901,7 +906,42 @@
         $(document).scrollTop(0)
     })
 
+    $(".searchTitle").click(function (){
+        $(this).hide()
+        $(".searchInput").show()
+        $(".searchInput").focus()
+    })
+    $(".searchInput").keyup(function (e){
+        if(e.which === 13){
+            let val = $(this).val()
+            let titleText = $(".titleDiv").text();
+            let reg = new RegExp(val, "i");
+            let index = titleText.search(reg);
+            if(index === -1){
+                $(this).css("border", "2px solid #c40000")
+                return
+            }
+            let preStr = titleText.substring(0, index)
+            let realIndex = preStr.lastIndexOf(".");
+            let num = preStr.substring(realIndex-4, realIndex);
+            num = parseInt(num);
 
+            let titleEleIndex = 0;
+            $(".titleLink").each(function (){
+                ++titleEleIndex;
+                let ele = $(this)[0]
+                if(num === titleEleIndex){
+                    ele.click()
+                }
+            })
+        }
+    })
+    $(".searchInput").blur(function (){
+        $(this).hide();
+        $(".searchTitle").show();
+        $(this).val("")
+        $(this).css("border", "")
+    })
 </script>
 
 <style>
