@@ -867,6 +867,22 @@
         $("#changeTitleSite").remove()
     })
 
+    let scrollIndex = -1;
+    $(document).scroll(function (){
+        let top = $(this).scrollTop();
+        top = parseInt(top)
+        if(scrollIndex !== 0){
+            if(top > 300){
+                scrollIndex = 0;
+                $(".hideTitle").click()
+            }
+        }
+        if(scrollIndex === 0 && top < 300){
+            $(".hideTitle").click()
+            scrollIndex = 1;
+        }
+    })
+
 
 </script>
 
