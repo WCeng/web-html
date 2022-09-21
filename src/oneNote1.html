@@ -755,7 +755,10 @@
 
     //    导入文件
     $(".importButton").click(function () {
-        $("#fileInput").click()
+        let confirmImport = confirm("导入前要记得备份数据");
+        if (confirmImport){
+            $("#fileInput").click()
+        }
     })
 
     function getFileContent(value) {
