@@ -891,13 +891,13 @@
         let top = $(this).scrollTop();
         top = parseInt(top)
         if(scrollIndex !== 0){
-            if(top > 300){
+            if(top > 5){
                 scrollIndex = 0;
                 $(".hideTitle").click()
                 $(".upToTop").show();
             }
         }
-        if(scrollIndex === 0 && top < 300){
+        if(scrollIndex === 0 && top < 5){
             $(".hideTitle").click()
             scrollIndex = 1;
             $(".upToTop").hide()
