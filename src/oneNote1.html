@@ -149,7 +149,7 @@
     .titleDiv{
         overflow-y: scroll;
         overflow-x: hidden;
-        height: 1000px;
+        height: 800px;
         padding-bottom: 500px;
     }
     .titleDiv::-webkit-scrollbar{
@@ -891,13 +891,13 @@
         let top = $(this).scrollTop();
         top = parseInt(top)
         if(scrollIndex !== 0){
-            if(top > 5){
+            if(top > 1){
                 scrollIndex = 0;
                 $(".hideTitle").click()
                 $(".upToTop").show();
             }
         }
-        if(scrollIndex === 0 && top < 5){
+        if(scrollIndex === 0 && top < 1){
             $(".hideTitle").click()
             scrollIndex = 1;
             $(".upToTop").hide()
@@ -950,10 +950,11 @@
 <style>
     .upToTop{
         position: fixed;
-        top: 30px;
-        right: 20px;
+        top: 20px;
+        right: 10px;
         cursor: pointer;
-        opacity: 0.6;
+        color: #c7edcc;
+        font-size: 50px !important;
     }
 </style>
 
