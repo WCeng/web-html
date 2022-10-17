@@ -592,11 +592,14 @@
     })
 
     //图片识别
+    let imageFounding = true;
     $(".contentDiv").on("dblclick", "img", function () {
-        $(this).css("width", "40%")
-    })
-    $(".contentDiv").on("click", "img", function () {
-        $(this).css("width", "100%")
+        if(imageFounding){
+            $(this).css("width", "40%")
+        }else {
+            $(this).css("width", "100%")
+        }
+        imageFounding = !imageFounding;
     })
 
     $(".contentDiv").on("paste", function () {
@@ -945,6 +948,7 @@
         $(this).val("")
         $(this).css("border", "")
     })
+
 </script>
 
 <style>
