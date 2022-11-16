@@ -1,36 +1,48 @@
-<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="referrer" content="no-referrer">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta charset="UTF-8"/>
+    <title>NASA Picture of the Day</title>
     <script src="https://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
-    <link href="https://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
-    <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-
-    <link type="text/css" rel="stylesheet"
-          href="https://wceng.github.io/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
-    <script type="text/javascript" src="https://wceng.github.io/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
-
+    <script src="https://cdn.bootcdn.net/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
 </head>
-
-<style>
-
-</style>
-
 <body>
+<div>
+</div>
 
-</body>
-<script>
-    let b = "abcdefghijklmnopqrstuvwxyz";
-    let pat =  new RegExp("e", "g");
-    let a =  pat.exec("abcde");
-    // alert(a)
-    let c = b.search("")
-    alert(c)
+<script type="text/javascript">
+    var appKey = '1b9d18b287c04736';
+    var key = '6VD4Bqu6io2Dprtvyo7IFrDvYL5dfSuY';//注意：暴露appSecret，有被盗用造成损失的风险
+    var salt = (new Date
+    ).getTime();
+    var curtime = Math.round(new Date().getTime() / 1000
+        )
+    ;
+    var query = '您好，欢迎再次使用有道智云文本翻译API接口服务';
+    // 多个query可以用\n连接 如 query = 'apple\norange\nbanana\npear'
+    var from = 'zh-CHS';
+    var to = 'en';
+    var str1 = appKey + truncate(query) + salt + curtime + key;
+    var vocabId = '您的用户词表ID';
+    //console.log('---',str1);
+
+    var sign = CryptoJS.SHA256(str1).toString(CryptoJS.enc.Hex);
+    let url1 = "https://openapi.youdao.com/api" + "?q=" + query + "&appKey=" + appKey + "&salt=" + salt + "&from=" + from + "&to=" + to + "&sign=" + sign + "&signType=v3&curtime=" + curtime
+    console.log(url1)
+    $.ajax({
+        url: url1,
+        type: 'post',
+        dataType: 'jsonp',
+        success: function (data) {
+            console.log(data.translation[0]);
+        }
+    })
+    ;
+
+    function truncate(q) {
+        var len = q.length;
+        if (len <= 20) return q;
+        return q.substring(0, 10) + len + q.substring(len - 10, len);
+    }
 </script>
+</body>
 </html>
